@@ -1,0 +1,93 @@
+CREATE DATABASE ESTUDIANTE
+GO
+
+USE ESTUDIANTE
+GO
+
+CREATE TABLE ESTUDIANTE 
+(
+Lector_ID INT UNIQUE,
+Cedula VARCHAR(12) UNIQUE,
+Nombre VARCHAR(20) NOT NULL,
+Apellido_1 VARCHAR(20),
+Apellido_2 VARCHAR(20),
+Direccion VARCHAR(400),
+Carrera_ID INT,
+Edad INT,
+Promedio INT,
+CONSTRAINT PK_Lector_ID PRIMARY KEY (Lector_ID)
+)
+GO
+
+INSERT INTO ESTUDIANTE VALUES('1','491685191','Fernando','Maza','Rodriguez','Heredia, Cantón de Barva',10, 25,90)
+INSERT INTO ESTUDIANTE VALUES('2','106327788','Jose Manuel','Melendez','Garcia','Heredia, Cantón de San Pablo',9,23, 85)
+INSERT INTO ESTUDIANTE VALUES('3','715865119','Miguel','Peréz','Conejo','Heredia, Cantón de San Joaquín',12,28,95)
+INSERT INTO ESTUDIANTE VALUES('4','102222649','Eva','Mata','Vaca','San José, Cantón de Dota',11,20,95)
+INSERT INTO ESTUDIANTE VALUES('5','395279307','Yolanda','Lozano','San José, Cantón de Pérez Zeledón',11,21,85)
+INSERT INTO ESTUDIANTE VALUES('6','496917173','Juan Luis','Lopez','San José, Cantón de Aserrí',9,24,80)
+INSERT INTO ESTUDIANTE VALUES('7','149110056','Louisa','Lopez','Rubin','San José, Cantón de Tarrazú',7,19,75)
+INSERT INTO ESTUDIANTE VALUES('8','596377651','Anselmo','Melendez','Garcia','Cartago, Cantón del Guarco',9,23,80)
+INSERT INTO ESTUDIANTE VALUES('9','672589285','Gudencio','Noriega','Garcia','Cartago, Cantón de Oreamuno',13,19,95)
+INSERT INTO ESTUDIANTE VALUES('10','604389456','Genaro','Lozano','Marina','Cartago, Cantón de Paraíso',10,21,85)
+INSERT INTO ESTUDIANTE VALUES('11','395428636','Artemio','Armesto','Rodriguez','Cartago, Cantón de la Unión',11,22,100)
+INSERT INTO ESTUDIANTE VALUES('12','774957764','Raul','Valdez','Alanes','Heredia, Cantón Central',8,23,100)
+INSERT INTO ESTUDIANTE VALUES('13','603472046','Mario','Arias','Fernandez','Cartago, Cantón de Cartago',1,25,80)
+INSERT INTO ESTUDIANTE VALUES('14','627077083','Juan','Anaya','Rugarcia','Cartago, Cantón de la Unión',12,26,95)
+INSERT INTO ESTUDIANTE VALUES('15','747782492','Gabriela','Alavarez','Lopez','Heredia, Cantón Central',14,25,100)
+
+
+---Create index----
+CREATE INDEX edad_index ON ESTUDIANTE (Edad);
+
+SHOW INDEX FROM ESTUDIANTE;
+
+DROP INDEX edad_index ON ESTUDIANTE;
+
+CREATE INDEX double_index ON ESTUDIANTE (Nombre, Edad);
+
+---Create rank ---
+SELECT *,
+       Rank()
+         OVER (
+           ORDER BY Promedio DESC) AS 'ranks'
+FROM   ESTUDIANTE;
+
+SELECT *,
+       Rank()
+         OVER (
+           PARTITION BY Carrera_ID
+           ORDER BY Promedio DESC) AS 'ranks'
+FROM   ESTUDIANTE;
+
+SELECT *,
+       DENSE_RANK()
+         OVER (
+           PARTITION BY Carrera_ID
+           ORDER BY Promedio DESC) AS 'ranks'
+FROM ESTUDIANTE;
+
+---Create bucket number---
+SELECT *,
+       NTILE(3)
+         OVER (
+           ORDER BY Promedio DESC) AS bucket
+FROM   ESTUDIANTE; 
+
+--- Finds the acumulative distribution of a particular value---
+
+SELECT *,
+       CUME_DIST()
+         OVER (
+           ORDER BY Promedio) AS cum_dis
+FROM  ESTUDIANTE; 
+
+
+SELECT *,
+       CUME_DIST()
+         OVER (
+           PARTITION BY Carrera_ID
+           ORDER BY Promedio) AS cum_dis
+FROM  ESTUDIANTE; 
+
+
+
